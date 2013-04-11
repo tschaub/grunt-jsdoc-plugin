@@ -10,9 +10,10 @@ module.exports = {
 	 * @param {String} script - the script to run
 	 * @param {Array} sources - the list of sources files
 	 * @param {Object} options - the list of cli flags
+	 * @param {Object} cwd - current working directory of the child process
 	 * @return {ChildProcess} from the spawn
 	 */
-	buildSpawned : function(grunt, script, sources, options){
+	buildSpawned : function(grunt, script, sources, options, cwd){
 		'use strict';
 	
 		var util = require('util'),
@@ -39,7 +40,7 @@ module.exports = {
 
 		grunt.log.debug("Running : "+ cmd + " " + args.join(' '));
 
-		return spawn(cmd, args);
+		return spawn(cmd, args, {cwd: cwd});
 	},
 
 	/**

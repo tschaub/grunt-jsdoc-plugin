@@ -46,6 +46,12 @@ module.exports = function jsDocTask(grunt) {
 			options.destination = grunt.task.current.files[0].dest || 'doc';
 		}
 
+		var cwd = options.cwd;
+		if (cwd && !fs.existsSync(cwd)) {
+			grunt.log.error('cwd file path does not exist');
+			grunt.fail.warn('Wrong configuration', errorCode.generic);
+		}
+
 		//legacy configs
 		if(options.config){
 			options.configure = options.config;
@@ -87,7 +93,7 @@ module.exports = function jsDocTask(grunt) {
 		}
 
 		//check if jsdoc config file path is provided and does exist
-		if (options.configure && !fs.existsSync(options.configure)){
+		if (options.configure && !fs.existsSync(path.join(cwd, options.configure))){
 			grunt.log.error('jsdoc config file path does not exist');
 			grunt.fail.warn('Wrong configuration', errorCode.generic);
 		}
@@ -100,7 +106,7 @@ module.exports = function jsDocTask(grunt) {
 			}
 
 			//execution of the jsdoc command
-			var child = exec.buildSpawned(grunt, jsDoc, srcs, options);
+			var child = exec.buildSpawned(grunt, jsDoc, srcs, options, cwd);
 			child.stdout.on('data', function (data) {
 				grunt.log.debug('jsdoc output : ' + data);
 			});
